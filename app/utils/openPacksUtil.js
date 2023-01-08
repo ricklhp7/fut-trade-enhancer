@@ -137,8 +137,16 @@ const handleNonDuplicateNonPlayers = (items, action) => {
   return handleItems(nonDuplicateNonPlayersItems, action);
 };
 
+const handleDuplicatePlayers = (items, action) => {
+  const duplicatePlayersItems = items.filter(
+    (item) => item.isDuplicate() && item.isPlayer()
+  );
+  sendUINotification(t("handlingDuplicatePlayers"));
+  return handleItems(duplicatePlayersItems, action);
+};
+
 const handleDuplicates = (items, action) => {
-  const duplicateItems = items.filter((item) => item.isDuplicate());
+  const duplicateItems = items.filter((item) => item.isDuplicate() && !item.isPlayer());
   sendUINotification(t("handlingDuplicates"));
   return handleItems(duplicateItems, action);
 };
