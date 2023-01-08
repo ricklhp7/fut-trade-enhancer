@@ -3,6 +3,7 @@ import {
   idPackNonPlayersAction,
   idPackOpenCredits,
   idPackPlayersAction,
+  idPackDuplicatesPlayersAction,
   idPacksCount,
 } from "../app.constants";
 import { formatDataSource, hideLoader, showLoader, wait } from "./commonUtil";
@@ -38,6 +39,7 @@ const setUpType = () => {
   ];
   return [
     { id: idPackPlayersAction, label: t("players"), actions: defaultOptions },
+    { id: idPackDuplicatesPlayersAction, label: t("duplicatedplayers"), actions: defaultOptions },
     {
       id: idPackNonPlayersAction,
       label: t("nonPlayers"),
@@ -92,11 +94,13 @@ const getPopUpValues = () => {
   const noOfPacks = parseInt($(`#${idPacksCount}`).val()) || 3;
   const credits = $(`#${idPackOpenCredits}`).val() || GameCurrency.COINS;
   const playersHandler = $(`#${idPackPlayersAction}`).val();
+  const duplicatesPlayersHandler = $(`#${idPackDuplicatesPlayersAction}`).val();
   const nonPlayersHandler = $(`#${idPackNonPlayersAction}`).val();
   const duplicateHandler = $(`#${idPackDuplicatesAction}`).val();
   return {
     noOfPacks,
     playersHandler,
+    duplicatesPlayersHandler,
     nonPlayersHandler,
     duplicateHandler,
     credits,
@@ -237,6 +241,11 @@ const buyPack = (pack, popUpValues) => {
             response += await handleNonDuplicatePlayers(
               items,
               popUpValues.playersHandler
+            );
+            await wait(2);
+            response += await handleDuplicatePlayers(
+              items,
+              popUpValues.duplicatesPlayersHandler
             );
             await wait(2);
             response += await handleNonDuplicateNonPlayers(
